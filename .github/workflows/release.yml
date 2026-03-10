@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: macos-latest
@@ -38,7 +41,6 @@ jobs:
         with:
           name: "KeyPet ${{ steps.sha.outputs.version }}"
           files: ${{ steps.sha.outputs.dmg_path }}
-          generate_release_notes: true
 
       - name: Dispatch Cask update to homebrew-tap
         uses: peter-evans/repository-dispatch@v3
