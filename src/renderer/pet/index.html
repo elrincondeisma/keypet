@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; }
+    html, body {
+      overflow: hidden;
+      background: transparent;
+      width: 100%;
+      height: 100%;
+    }
+    #pet-img {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      image-rendering: pixelated;
+      cursor: grab;
+    }
+    #pet-img.dragging {
+      cursor: grabbing;
+    }
+  </style>
+</head>
+<body>
+<img id="pet-img" src="" alt="pet" />
+<script>
+const GIF_NAMES = {
+  idle:        'idle.gif',
+  active:      'active.gif',
+  tired:       'active.gif',
+  sad:         'active.gif',
+  celebration: 'frenetic.gif',
+  frenetic:    'frenetic.gif',
+};
+
+const img = document.getElementById('pet-img');
+let currentCharacter = 'chico'; // updated on first pet-state or getCharacter call
+
+function gifPath(state) {
+  const name = GIF_NAMES[state] || GIF_NAMES.idle;
+  return `../../assets/${currentCharacter}/${name}`;
+}
+
+function setGif(state) {
+  const src = gifPath(state);
+  const stateKey = `${currentCharacter}:${state}`;
+  // Force GIF restart only when state or character changes
+  if (img.dataset.stateKey !== stateKey) {
+    img.dataset.stateKey = stateKey;
+    img.src = src + '?t=' + Date.now();
+  }
+}
+
+// Load initial character then show idle
+window.keypet.getCharacter().then(character => {
+  currentCharacter = character || 'chico';
+  setGif('idle');
+});
+
+window.keypet.onPetState(({ state, character }) => {
+  if (character && character !== currentCharacter) {
+    currentCharacter = character;
+    // Force reload by clearing stateKey cache
+    img.dataset.stateKey = '';
+  }
+  setGif(state);
+});
+
+// --- Drag to reposition ---
+let isDragging = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+// When the mouse enters the pet image, enable mouse events so we can receive them
+img.addEventListener('mouseenter', () => {
+  window.keypet.setIgnoreMouseEvents(false);
+});
+
+// When the mouse leaves and we are NOT dragging, restore click-through
+img.addEventListener('mouseleave', () => {
+  if (!isDragging) {
+    window.keypet.setIgnoreMouseEvents(true);
+  }
+});
+
+img.addEventListener('mousedown', (e) => {
+  if (e.button === 2) return; // right click handled by contextmenu event
+  if (e.button !== 0) return; // left button only
+  isDragging = true;
+  // screenX/screenY are the mouse coords relative to the screen.
+  // We need the window's current position to compute the offset.
+  // window.screenX / window.screenY give us the window's top-left on screen.
+  dragOffsetX = e.screenX - window.screenX;
+  dragOffsetY = e.screenY - window.screenY;
+  img.classList.add('dragging');
+  e.preventDefault();
+});
+
+window.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const newX = e.screenX - dragOffsetX;
+  const newY = e.screenY - dragOffsetY;
+  window.keypet.moveWindow(newX, newY);
+});
+
+window.addEventListener('mouseup', (e) => {
+  if (!isDragging) return;
+  isDragging = false;
+  img.classList.remove('dragging');
+  // Restore click-through only if mouse is no longer over the image
+  const rect = img.getBoundingClientRect();
+  const overImage = (
+    e.clientX >= rect.left && e.clientX <= rect.right &&
+    e.clientY >= rect.top  && e.clientY <= rect.bottom
+  );
+  if (!overImage) {
+    window.keypet.setIgnoreMouseEvents(true);
+  }
+});
+
+// Right-click: show native context menu with stats
+img.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  window.keypet.showContextMenu();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{
+  "name": "keypet",
+  "version": "1.0.1",
+  "description": "Desktop Pixel Pet for Developers",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "tsc && node scripts/copy-renderer.js",
+    "start": "npm run build && electron .",
+    "dev": "npm run build && electron .",
+    "rebuild": "electron-rebuild",
+    "postinstall": "electron-rebuild",
+    "dist": "npm run build && electron-builder"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "uiohook-napi": "^1.5.4"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.7.1",
+    "@types/better-sqlite3": "^7.6.12",
+    "electron": "^33.3.1",
+    "electron-builder": "^26.8.1",
+    "typescript": "^5.7.3"
+  },
+  "build": {
+    "appId": "com.keypet.app",
+    "productName": "KeyPet",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "dist/main/index.js"
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "icon": "assets/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "hardenedRuntime": false
+    },
+    "dmg": {
+      "title": "KeyPet ${version}",
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "contents": [
+        {
+          "x": 130,
+          "y": 220,
+          "type": "file"
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  }
+}

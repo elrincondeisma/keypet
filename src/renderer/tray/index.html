@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      padding: 20px;
+      overflow: hidden;
+      -webkit-app-region: no-drag;
+      user-select: none;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: 16px;
+      color: #a8d8ea;
+      font-weight: 600;
+    }
+    .stats-row {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      text-align: center;
+      background: #16213e;
+      border-radius: 10px;
+      padding: 14px 20px;
+      flex: 1;
+      margin: 0 4px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffd93d;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #8899aa;
+      margin-top: 4px;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 11px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-primary {
+      background: #0f3460;
+      color: #a8d8ea;
+    }
+    .btn-primary:hover { background: #16478a; }
+    .btn-secondary {
+      background: #16213e;
+      color: #8899aa;
+    }
+    .btn-secondary:hover { background: #1a2a4a; }
+    .btn-danger {
+      background: transparent;
+      color: #ff6b6b;
+      font-size: 11px;
+    }
+    .btn-danger:hover { background: #2a1a1a; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>KeyPet</h1>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value" id="today-count">0</div>
+      <div class="stat-label">Hoy</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="streak-count">0</div>
+      <div class="stat-label">Racha de días</div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="btn-stats">Ver estadísticas</button>
+    <button class="btn btn-secondary" id="btn-settings">Ajustes</button>
+    <button class="btn btn-secondary" id="btn-toggle">Ocultar pet</button>
+    <button class="btn btn-danger" id="btn-quit">Salir de KeyPet</button>
+  </div>
+
+<script>
+  const todayEl = document.getElementById('today-count');
+  const streakEl = document.getElementById('streak-count');
+
+  function formatNumber(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    return String(n);
+  }
+
+  window.keypet.onStatsUpdate(({ today, streak }) => {
+    todayEl.textContent = formatNumber(today);
+    streakEl.textContent = String(streak);
+  });
+
+  document.getElementById('btn-stats').addEventListener('click', () => {
+    window.keypet.openStats();
+  });
+
+  document.getElementById('btn-settings').addEventListener('click', () => {
+    window.keypet.openSettings();
+  });
+
+  document.getElementById('btn-toggle').addEventListener('click', () => {
+    window.keypet.togglePet();
+  });
+
+  document.getElementById('btn-quit').addEventListener('click', () => {
+    window.keypet.quit();
+  });
+</script>
+</body>
+</html>
