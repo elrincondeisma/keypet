@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and package
+        run: npm run dist
+
+      - name: Compute SHA256
+        id: sha
+        run: |
+          DMG=$(ls release/KeyPet-*-arm64.dmg | head -1)
+          SHA=$(shasum -a 256 "$DMG" | awk '{print $1}')
+          echo "sha256=$SHA" >> $GITHUB_OUTPUT
+          echo "dmg_path=$DMG" >> $GITHUB_OUTPUT
+          echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "KeyPet ${{ steps.sha.outputs.version }}"
+          files: ${{ steps.sha.outputs.dmg_path }}
+          generate_release_notes: true
+
+      - name: Dispatch Cask update to homebrew-tap
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.TAP_TOKEN }}
+          repository: elrincondeisma/homebrew-tap
+          event-type: update-cask
+          client-payload: |
+            {
+              "version": "${{ steps.sha.outputs.version }}",
+              "sha256_arm64": "${{ steps.sha.outputs.sha256 }}"
+            }
