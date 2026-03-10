@@ -27,14 +27,6 @@ jobs:
       - name: Build and package
         run: npm run dist -- --publish never
 
-      - name: Verify binary architecture
-        run: |
-          echo "Runner arch: $(uname -m)"
-          APP=$(find release/mac-arm64 -name "KeyPet" -type f | head -1)
-          if [ -n "$APP" ]; then
-            echo "Binary arch: $(file "$APP")"
-          fi
-
       - name: Compute SHA256
         id: sha
         run: |
