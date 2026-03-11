@@ -9,7 +9,7 @@
       background: #1a1a2e;
       color: #e0e0e0;
       padding: 20px;
-      overflow: hidden;
+      overflow-y: auto;
       -webkit-app-region: no-drag;
       user-select: none;
     }
@@ -77,6 +77,35 @@
       font-size: 11px;
     }
     .btn-danger:hover { background: #2a1a1a; }
+    .size-section {
+      margin-bottom: 12px;
+    }
+    .size-label {
+      font-size: 11px;
+      color: #8899aa;
+      margin-bottom: 6px;
+    }
+    .size-options {
+      display: flex;
+      gap: 4px;
+    }
+    .size-btn {
+      flex: 1;
+      padding: 6px 0;
+      border: 1px solid #0f3460;
+      border-radius: 6px;
+      background: #16213e;
+      color: #8899aa;
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .size-btn:hover { background: #1a2a4a; }
+    .size-btn.active {
+      background: #0f3460;
+      color: #a8d8ea;
+      border-color: #a8d8ea;
+    }
   </style>
 </head>
 <body>
@@ -92,6 +121,17 @@
     <div class="stat-card">
       <div class="stat-value" id="streak-count">0</div>
       <div class="stat-label">Racha de días</div>
+    </div>
+  </div>
+
+  <div class="size-section">
+    <div class="size-label">Tamaño del pet</div>
+    <div class="size-options">
+      <button class="size-btn" data-size="xxsmall">XX</button>
+      <button class="size-btn" data-size="xsmall">XS</button>
+      <button class="size-btn" data-size="small">S</button>
+      <button class="size-btn" data-size="normal">M</button>
+      <button class="size-btn" data-size="large">L</button>
     </div>
   </div>
 
@@ -115,6 +155,26 @@
   window.keypet.onStatsUpdate(({ today, streak }) => {
     todayEl.textContent = formatNumber(today);
     streakEl.textContent = String(streak);
+  });
+
+  const sizeBtns = document.querySelectorAll('.size-btn');
+
+  function setActiveSize(size) {
+    sizeBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.size === size);
+    });
+  }
+
+  sizeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const size = btn.dataset.size;
+      setActiveSize(size);
+      window.keypet.changeSize(size);
+    });
+  });
+
+  window.keypet.onSizeUpdate((size) => {
+    setActiveSize(size);
   });
 
   document.getElementById('btn-stats').addEventListener('click', () => {

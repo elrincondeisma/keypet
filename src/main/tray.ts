@@ -1,5 +1,6 @@
 import { Tray, nativeImage, BrowserWindow, screen, ipcMain } from 'electron';
 import path from 'path';
+import { getSettings } from './database';
 
 let tray: Tray | null = null;
 let trayWindow: BrowserWindow | null = null;
@@ -53,7 +54,7 @@ function createTrayIcon(): Electron.NativeImage {
   return img;
 }
 
-export function createTray(onTogglePet: () => void, onOpenStats: () => void, onOpenSettings: () => void): Tray {
+export function createTray(onTogglePet: () => void, onOpenStats: () => void, onOpenSettings: () => void, onChangeSize: (size: string) => void): Tray {
   const icon = createTrayIcon();
   tray = new Tray(icon);
   tray.setToolTip('KeyPet');
@@ -63,13 +64,13 @@ export function createTray(onTogglePet: () => void, onOpenStats: () => void, onO
       trayWindow.hide();
       return;
     }
-    showTrayWindow(onTogglePet, onOpenStats, onOpenSettings);
+    showTrayWindow(onTogglePet, onOpenStats, onOpenSettings, onChangeSize);
   });
 
   return tray;
 }
 
-function showTrayWindow(onTogglePet: () => void, onOpenStats: () => void, onOpenSettings: () => void): void {
+function showTrayWindow(onTogglePet: () => void, onOpenStats: () => void, onOpenSettings: () => void, onChangeSize: (size: string) => void): void {
   if (!tray) return;
 
   if (!trayWindow) {
@@ -104,6 +105,7 @@ function showTrayWindow(onTogglePet: () => void, onOpenStats: () => void, onOpen
       trayWindow?.hide();
       onOpenSettings();
     });
+    ipcMain.on('tray:change-size', (_event, size: string) => onChangeSize(size));
     ipcMain.on('tray:quit', () => {
       const { app } = require('electron');
       app.quit();
@@ -124,11 +126,18 @@ function showTrayWindow(onTogglePet: () => void, onOpenStats: () => void, onOpen
   );
   trayWindow.show();
   trayWindow.focus();
+  trayWindow.webContents.send('size-update', getSettings().size);
 }
 
 export function updateTrayStats(today: number, streak: number): void {
   if (trayWindow && !trayWindow.isDestroyed()) {
     trayWindow.webContents.send('stats-update', { today, streak });
+  }
+}
+
+export function updateTraySize(size: string): void {
+  if (trayWindow && !trayWindow.isDestroyed()) {
+    trayWindow.webContents.send('size-update', size);
   }
 }
 

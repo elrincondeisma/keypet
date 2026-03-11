@@ -2,10 +2,10 @@ import { app, ipcMain, Menu, BrowserWindow, Notification, systemPreferences, dia
 import { initDatabase, incrementKeyCount, getSettings, saveSettings, resetAll, closeDatabase } from './database';
 import { keyboardListener } from './keyboard-listener';
 import { getFullStats, determinePetState, checkAndRecordEvolution } from './stats-engine';
-import { createTray, updateTrayStats, destroyTray } from './tray';
+import { createTray, updateTrayStats, updateTraySize, destroyTray } from './tray';
 import { createPetWindow, updatePetState, repositionPet, showPet, hidePet, isPetVisible, createStatsWindow, destroyAllWindows, setPetIgnoreMouseEvents, movePet } from './windows';
 import { pomodoroEngine } from './pomodoro-engine';
-import { Settings, PetState, PomodoroState } from '../shared/types';
+import { Settings, PetState, PetSize, PomodoroState } from '../shared/types';
 
 let currentPetState: PetState = 'idle';
 let currentLevel = 1;
@@ -101,6 +101,12 @@ async function initialize(): Promise<void> {
       if (!win.webContents.isLoading()) {
         win.webContents.send('navigate-tab', 'settings');
       }
+    },
+    (size: string) => {
+      const s = getSettings();
+      s.size = size as PetSize;
+      saveSettings(s);
+      repositionPet(s.corner, s.size);
     }
   );
 
