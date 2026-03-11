@@ -1,6 +1,6 @@
 {
   "name": "keypet",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Desktop Pixel Pet for Developers",
   "main": "dist/main/index.js",
   "scripts": {
