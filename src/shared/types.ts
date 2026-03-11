@@ -90,9 +90,12 @@ export const POMODORO_DURATIONS: Record<PomodoroPhase, number> = {
 // How many work sessions before a long break
 export const POMODORO_CYCLE_LENGTH = 4;
 
+// Minimum window size that macOS renders without artifacts for transparent windows.
+export const MIN_WINDOW = { w: 64, h: 80 };
+
 // Widths chosen per size; height derived from the ~4:5 GIF aspect ratio.
 export const SIZE_MAP: Record<PetSize, PetDimensions> = {
-  xxsmall: { w: 40, h: 50  },
+  xxsmall: { w: 48, h: 60  },
   xsmall:  { w: 64, h: 80  },
   small:  { w: 96,  h: 120 },
   normal: { w: 128, h: 160 },

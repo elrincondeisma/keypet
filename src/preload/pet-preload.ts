@@ -5,6 +5,9 @@ contextBridge.exposeInMainWorld('keypet', {
     ipcRenderer.on('pet-state', (_event, data) => callback(data));
   },
   getCharacter: () => ipcRenderer.invoke('get-character'),
+  onPetResize: (callback: (data: { w: number; h: number }) => void) => {
+    ipcRenderer.on('pet-resize', (_event, data) => callback(data));
+  },
   setIgnoreMouseEvents: (ignore: boolean) => {
     ipcRenderer.send('set-ignore-mouse-events', ignore);
   },

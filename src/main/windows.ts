@@ -1,13 +1,15 @@
 import { BrowserWindow, screen } from 'electron';
 import path from 'path';
-import { PetCorner, PetState, SIZE_MAP, PetSize } from '../shared/types';
+import { PetCorner, PetState, SIZE_MAP, MIN_WINDOW, PetSize } from '../shared/types';
 import { getSettings } from './database';
 
 let petWindow: BrowserWindow | null = null;
 let statsWindow: BrowserWindow | null = null;
 
 export function createPetWindow(corner: PetCorner, size: PetSize): BrowserWindow {
-  const { w: petW, h: petH } = SIZE_MAP[size];
+  const dims = SIZE_MAP[size];
+  const winW = Math.max(dims.w, MIN_WINDOW.w);
+  const winH = Math.max(dims.h, MIN_WINDOW.h);
   const display = screen.getPrimaryDisplay();
   const { workArea } = display;
   const margin = 20;
@@ -19,23 +21,23 @@ export function createPetWindow(corner: PetCorner, size: PetSize): BrowserWindow
       y = workArea.y + margin;
       break;
     case 'top-right':
-      x = workArea.x + workArea.width - petW - margin;
+      x = workArea.x + workArea.width - winW - margin;
       y = workArea.y + margin;
       break;
     case 'bottom-left':
       x = workArea.x + margin;
-      y = workArea.y + workArea.height - petH - margin;
+      y = workArea.y + workArea.height - winH - margin;
       break;
     case 'bottom-right':
     default:
-      x = workArea.x + workArea.width - petW - margin;
-      y = workArea.y + workArea.height - petH - margin;
+      x = workArea.x + workArea.width - winW - margin;
+      y = workArea.y + workArea.height - winH - margin;
       break;
   }
 
   petWindow = new BrowserWindow({
-    width: petW,
-    height: petH,
+    width: winW,
+    height: winH,
     x,
     y,
     transparent: true,
@@ -56,6 +58,10 @@ export function createPetWindow(corner: PetCorner, size: PetSize): BrowserWindow
 
   petWindow.loadFile(path.join(__dirname, '..', 'renderer', 'pet', 'index.html'));
 
+  petWindow.webContents.on('did-finish-load', () => {
+    petWindow?.webContents.send('pet-resize', { w: dims.w, h: dims.h });
+  });
+
   petWindow.on('closed', () => {
     petWindow = null;
   });
@@ -73,7 +79,9 @@ export function updatePetState(state: PetState, level: number): void {
 export function repositionPet(corner: PetCorner, size: PetSize): void {
   if (!petWindow || petWindow.isDestroyed()) return;
 
-  const { w: petW, h: petH } = SIZE_MAP[size];
+  const dims = SIZE_MAP[size];
+  const winW = Math.max(dims.w, MIN_WINDOW.w);
+  const winH = Math.max(dims.h, MIN_WINDOW.h);
   const display = screen.getPrimaryDisplay();
   const { workArea } = display;
   const margin = 20;
@@ -85,21 +93,22 @@ export function repositionPet(corner: PetCorner, size: PetSize): void {
       y = workArea.y + margin;
       break;
     case 'top-right':
-      x = workArea.x + workArea.width - petW - margin;
+      x = workArea.x + workArea.width - winW - margin;
       y = workArea.y + margin;
       break;
     case 'bottom-left':
       x = workArea.x + margin;
-      y = workArea.y + workArea.height - petH - margin;
+      y = workArea.y + workArea.height - winH - margin;
       break;
     case 'bottom-right':
     default:
-      x = workArea.x + workArea.width - petW - margin;
-      y = workArea.y + workArea.height - petH - margin;
+      x = workArea.x + workArea.width - winW - margin;
+      y = workArea.y + workArea.height - winH - margin;
       break;
   }
 
-  petWindow.setBounds({ x, y, width: petW, height: petH });
+  petWindow.setBounds({ x, y, width: winW, height: winH });
+  petWindow.webContents.send('pet-resize', { w: dims.w, h: dims.h });
 }
 
 export function showPet(): void {
