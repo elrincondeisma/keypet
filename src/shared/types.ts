@@ -24,7 +24,7 @@ export type PetState = 'idle' | 'active' | 'frenetic' | 'tired' | 'sad' | 'celeb
 
 export type PetCorner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
-export type PetSize = 'xsmall' | 'small' | 'normal' | 'large';
+export type PetSize = 'xxsmall' | 'xsmall' | 'small' | 'normal' | 'large';
 
 export type PetCharacter = 'chico' | 'chica';
 
@@ -92,7 +92,8 @@ export const POMODORO_CYCLE_LENGTH = 4;
 
 // Widths chosen per size; height derived from the ~4:5 GIF aspect ratio.
 export const SIZE_MAP: Record<PetSize, PetDimensions> = {
-  xsmall: { w: 64,  h: 80  },
+  xxsmall: { w: 40, h: 50  },
+  xsmall:  { w: 64, h: 80  },
   small:  { w: 96,  h: 120 },
   normal: { w: 128, h: 160 },
   large:  { w: 192, h: 240 },
