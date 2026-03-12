@@ -106,7 +106,7 @@ async function initialize(): Promise<void> {
       const s = getSettings();
       s.size = size as PetSize;
       saveSettings(s);
-      repositionPet(s.corner, s.size);
+      repositionPet(s.corner, s.size, false);
     }
   );
 
@@ -210,7 +210,8 @@ function setupIPC(): void {
     saveSettings(newSettings);
 
     if (newSettings.corner !== oldSettings.corner || newSettings.size !== oldSettings.size) {
-      repositionPet(newSettings.corner, newSettings.size);
+      const cornerChanged = newSettings.corner !== oldSettings.corner;
+      repositionPet(newSettings.corner, newSettings.size, cornerChanged);
     }
 
     if (newSettings.autoStart !== oldSettings.autoStart) {

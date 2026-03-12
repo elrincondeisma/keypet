@@ -76,35 +76,47 @@ export function updatePetState(state: PetState, level: number): void {
   }
 }
 
-export function repositionPet(corner: PetCorner, size: PetSize): void {
+export function repositionPet(corner: PetCorner, size: PetSize, snapToCorner = true): void {
   if (!petWindow || petWindow.isDestroyed()) return;
 
   const dims = SIZE_MAP[size];
   const winW = Math.max(dims.w, MIN_WINDOW.w);
   const winH = Math.max(dims.h, MIN_WINDOW.h);
-  const display = screen.getPrimaryDisplay();
+
+  // Use the display the pet window is currently on, not the primary display
+  const currentBounds = petWindow.getBounds();
+  const display = screen.getDisplayMatching(currentBounds);
   const { workArea } = display;
   const margin = 20;
 
   let x: number, y: number;
-  switch (corner) {
-    case 'top-left':
-      x = workArea.x + margin;
-      y = workArea.y + margin;
-      break;
-    case 'top-right':
-      x = workArea.x + workArea.width - winW - margin;
-      y = workArea.y + margin;
-      break;
-    case 'bottom-left':
-      x = workArea.x + margin;
-      y = workArea.y + workArea.height - winH - margin;
-      break;
-    case 'bottom-right':
-    default:
-      x = workArea.x + workArea.width - winW - margin;
-      y = workArea.y + workArea.height - winH - margin;
-      break;
+  if (snapToCorner) {
+    // Snap to the requested corner on the current display
+    switch (corner) {
+      case 'top-left':
+        x = workArea.x + margin;
+        y = workArea.y + margin;
+        break;
+      case 'top-right':
+        x = workArea.x + workArea.width - winW - margin;
+        y = workArea.y + margin;
+        break;
+      case 'bottom-left':
+        x = workArea.x + margin;
+        y = workArea.y + workArea.height - winH - margin;
+        break;
+      case 'bottom-right':
+      default:
+        x = workArea.x + workArea.width - winW - margin;
+        y = workArea.y + workArea.height - winH - margin;
+        break;
+    }
+  } else {
+    // Keep current position, just clamp so the window stays inside the work area
+    x = Math.min(currentBounds.x, workArea.x + workArea.width - winW);
+    x = Math.max(x, workArea.x);
+    y = Math.min(currentBounds.y, workArea.y + workArea.height - winH);
+    y = Math.max(y, workArea.y);
   }
 
   petWindow.setBounds({ x, y, width: winW, height: winH });

@@ -90,8 +90,10 @@ export const POMODORO_DURATIONS: Record<PomodoroPhase, number> = {
 // How many work sessions before a long break
 export const POMODORO_CYCLE_LENGTH = 4;
 
-// Minimum window size that macOS renders without artifacts for transparent windows.
-export const MIN_WINDOW = { w: 64, h: 80 };
+// Minimum BrowserWindow size to avoid Chromium/Electron bug where transparent
+// windows become opaque below ~64 px on macOS (electron/electron#38630).
+// 128x160 stays safe even on displays with scaleFactor differences.
+export const MIN_WINDOW = { w: 128, h: 160 };
 
 // Widths chosen per size; height derived from the ~4:5 GIF aspect ratio.
 export const SIZE_MAP: Record<PetSize, PetDimensions> = {
