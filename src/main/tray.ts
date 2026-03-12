@@ -34,8 +34,8 @@ function showTrayWindow(onTogglePet: () => void, onOpenStats: () => void, onOpen
 
   if (!trayWindow) {
     trayWindow = new BrowserWindow({
-      width: 300,
-      height: 340,
+      width: 320,
+      height: 420,
       show: false,
       frame: false,
       resizable: false,

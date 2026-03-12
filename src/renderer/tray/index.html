@@ -4,128 +4,248 @@
   <meta charset="UTF-8">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #1a1a2e;
-      color: #e0e0e0;
-      padding: 20px;
-      overflow-y: auto;
+      background: #1c1c1e;
+      color: #f2f2f7;
+      overflow: hidden;
       -webkit-app-region: no-drag;
       user-select: none;
+      font-size: 13px;
     }
+
+    /* ── Header ── */
     .header {
-      text-align: center;
-      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid #2c2c2e;
     }
-    .header h1 {
-      font-size: 16px;
-      color: #a8d8ea;
+
+    .header-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      image-rendering: pixelated;
+    }
+
+    .header-text {
+      flex: 1;
+    }
+
+    .header-title {
+      font-size: 14px;
       font-weight: 600;
+      color: #f2f2f7;
+      line-height: 1;
     }
+
+    .header-sub {
+      font-size: 11px;
+      color: #636366;
+      margin-top: 2px;
+    }
+
+    /* ── Stats badges row ── */
+    .stats-section {
+      padding: 12px 16px;
+      border-bottom: 1px solid #2c2c2e;
+    }
+
     .stats-row {
       display: flex;
-      justify-content: space-around;
-      margin-bottom: 20px;
-    }
-    .stat-card {
-      text-align: center;
-      background: #16213e;
-      border-radius: 10px;
-      padding: 14px 20px;
-      flex: 1;
-      margin: 0 4px;
-    }
-    .stat-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: #ffd93d;
-    }
-    .stat-label {
-      font-size: 11px;
-      color: #8899aa;
-      margin-top: 4px;
-    }
-    .actions {
-      display: flex;
-      flex-direction: column;
       gap: 8px;
     }
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 11px;
-      border: none;
-      border-radius: 8px;
-      font-size: 13px;
+
+    .stat-badge {
+      flex: 1;
+      background: #2c2c2e;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .stat-badge-label {
+      font-size: 10px;
       font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s;
+      color: #636366;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
     }
-    .btn-primary {
-      background: #0f3460;
-      color: #a8d8ea;
+
+    .stat-badge-value {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+      color: #f2f2f7;
     }
-    .btn-primary:hover { background: #16478a; }
-    .btn-secondary {
-      background: #16213e;
-      color: #8899aa;
+
+    .stat-badge-value.accent-yellow { color: #ffd60a; }
+    .stat-badge-value.accent-blue   { color: #0a84ff; }
+    .stat-badge-value.accent-green  { color: #30d158; }
+
+    .stat-badge-unit {
+      font-size: 10px;
+      color: #48484a;
+      font-weight: 400;
     }
-    .btn-secondary:hover { background: #1a2a4a; }
-    .btn-danger {
-      background: transparent;
-      color: #ff6b6b;
-      font-size: 11px;
+
+    /* ── Section separator ── */
+    .section-label {
+      padding: 8px 16px 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #48484a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .btn-danger:hover { background: #2a1a1a; }
+
+    /* ── Size picker ── */
     .size-section {
-      margin-bottom: 12px;
+      padding: 6px 16px 8px;
+      border-bottom: 1px solid #2c2c2e;
     }
-    .size-label {
-      font-size: 11px;
-      color: #8899aa;
-      margin-bottom: 6px;
-    }
+
     .size-options {
       display: flex;
-      gap: 4px;
+      gap: 5px;
+      margin-top: 4px;
     }
+
     .size-btn {
       flex: 1;
       padding: 6px 0;
-      border: 1px solid #0f3460;
-      border-radius: 6px;
-      background: #16213e;
-      color: #8899aa;
-      font-size: 10px;
+      border: 1px solid #3a3a3c;
+      border-radius: 7px;
+      background: #2c2c2e;
+      color: #8e8e93;
+      font-size: 11px;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.15s;
     }
-    .size-btn:hover { background: #1a2a4a; }
+
+    .size-btn:hover {
+      background: #3a3a3c;
+      color: #f2f2f7;
+    }
+
     .size-btn.active {
-      background: #0f3460;
-      color: #a8d8ea;
-      border-color: #a8d8ea;
+      background: #3a3a8c;
+      color: #a5b4fc;
+      border-color: #5e5ce6;
+    }
+
+    /* ── Menu items ── */
+    .menu-section {
+      padding: 4px 0;
+      border-bottom: 1px solid #2c2c2e;
+    }
+
+    .menu-section:last-of-type {
+      border-bottom: none;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      color: #f2f2f7;
+      font-size: 13px;
+      font-family: inherit;
+      border-radius: 0;
+      transition: background 0.1s;
+    }
+
+    .menu-item:hover {
+      background: #2c2c2e;
+    }
+
+    .menu-item-icon {
+      width: 18px;
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.8;
+      flex-shrink: 0;
+    }
+
+    .menu-item-label {
+      flex: 1;
+      font-weight: 400;
+    }
+
+    .menu-item-shortcut {
+      font-size: 11px;
+      color: #48484a;
+    }
+
+    .menu-item.destructive {
+      color: #ff453a;
+    }
+
+    .menu-item.muted {
+      color: #8e8e93;
+    }
+
+    .menu-item.muted:hover {
+      color: #f2f2f7;
+    }
+
+    /* ── Footer version ── */
+    .footer {
+      padding: 6px 16px 10px;
+      border-top: 1px solid #2c2c2e;
+    }
+
+    .footer-version {
+      font-size: 10px;
+      color: #3a3a3c;
+      text-align: center;
     }
   </style>
 </head>
 <body>
+
+  <!-- Header -->
   <div class="header">
-    <h1>KeyPet</h1>
-  </div>
-
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-value" id="today-count">0</div>
-      <div class="stat-label">Hoy</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value" id="streak-count">0</div>
-      <div class="stat-label">Racha de días</div>
+    <img class="header-icon" src="../../assets/logo.png" alt="KeyPet">
+    <div class="header-text">
+      <div class="header-title">KeyPet</div>
+      <div class="header-sub" id="header-status">Contando teclas...</div>
     </div>
   </div>
 
+  <!-- Stats badges -->
+  <div class="stats-section">
+    <div class="stats-row">
+      <div class="stat-badge">
+        <span class="stat-badge-label">Hoy</span>
+        <span class="stat-badge-value accent-yellow" id="today-count">0</span>
+        <span class="stat-badge-unit">teclas</span>
+      </div>
+      <div class="stat-badge">
+        <span class="stat-badge-label">Racha</span>
+        <span class="stat-badge-value accent-blue" id="streak-count">0</span>
+        <span class="stat-badge-unit">días</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pet size -->
   <div class="size-section">
-    <div class="size-label">Tamaño del pet</div>
+    <div class="section-label">Tamaño del pet</div>
     <div class="size-options">
       <button class="size-btn" data-size="xxsmall">XX</button>
       <button class="size-btn" data-size="xsmall">XS</button>
@@ -135,28 +255,50 @@
     </div>
   </div>
 
-  <div class="actions">
-    <button class="btn btn-primary" id="btn-stats">Ver estadísticas</button>
-    <button class="btn btn-secondary" id="btn-settings">Ajustes</button>
-    <button class="btn btn-secondary" id="btn-toggle">Ocultar pet</button>
-    <button class="btn btn-danger" id="btn-quit">Salir de KeyPet</button>
+  <!-- Actions -->
+  <div class="menu-section">
+    <button class="menu-item" id="btn-stats">
+      <span class="menu-item-icon">📊</span>
+      <span class="menu-item-label">Ver estadísticas</span>
+    </button>
+    <button class="menu-item" id="btn-settings">
+      <span class="menu-item-icon">⚙️</span>
+      <span class="menu-item-label">Ajustes</span>
+    </button>
+    <button class="menu-item muted" id="btn-toggle">
+      <span class="menu-item-icon">👁</span>
+      <span class="menu-item-label" id="toggle-label">Ocultar pet</span>
+    </button>
+  </div>
+
+  <!-- Quit -->
+  <div class="menu-section">
+    <button class="menu-item destructive" id="btn-quit">
+      <span class="menu-item-icon">✕</span>
+      <span class="menu-item-label">Salir de KeyPet</span>
+    </button>
+  </div>
+
+  <div class="footer">
+    <div class="footer-version">KeyPet v1.0</div>
   </div>
 
 <script>
-  const todayEl = document.getElementById('today-count');
+  const todayEl  = document.getElementById('today-count');
   const streakEl = document.getElementById('streak-count');
 
   function formatNumber(n) {
     if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
     return String(n);
   }
 
   window.keypet.onStatsUpdate(({ today, streak }) => {
-    todayEl.textContent = formatNumber(today);
+    todayEl.textContent  = formatNumber(today);
     streakEl.textContent = String(streak);
   });
 
+  // Size picker
   const sizeBtns = document.querySelectorAll('.size-btn');
 
   function setActiveSize(size) {
@@ -177,6 +319,7 @@
     setActiveSize(size);
   });
 
+  // Actions
   document.getElementById('btn-stats').addEventListener('click', () => {
     window.keypet.openStats();
   });

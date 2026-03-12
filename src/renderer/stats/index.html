@@ -2,94 +2,231 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>KeyPet - Estadísticas</title>
+  <title>KeyPet</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:       #141416;
+      --surface:  #1c1c1e;
+      --surface2: #2c2c2e;
+      --border:   #3a3a3c;
+      --text:     #f2f2f7;
+      --muted:    #636366;
+      --muted2:   #48484a;
+      --accent:   #5e5ce6;
+      --accent2:  #a78bfa;
+      --yellow:   #ffd60a;
+      --blue:     #0a84ff;
+      --green:    #30d158;
+      --red:      #ff453a;
+      --orange:   #ff9f0a;
+      --teal:     #5ac8fa;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #1a1a2e;
-      color: #e0e0e0;
-      padding: 20px;
-    }
-    h1 {
-      font-size: 20px;
-      color: #a8d8ea;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .tabs {
+      background: var(--bg);
+      color: var(--text);
       display: flex;
-      gap: 4px;
-      margin-bottom: 20px;
-      background: #16213e;
-      border-radius: 10px;
-      padding: 4px;
+      flex-direction: column;
+      overflow: hidden;
     }
+
+    /* ── Top bar ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 24px 0;
+      flex-shrink: 0;
+    }
+
+    .topbar-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      image-rendering: pixelated;
+    }
+
+    .topbar-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    /* ── Tab switcher ── */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      padding: 16px 24px 0;
+      border-bottom: 1px solid var(--surface2);
+      flex-shrink: 0;
+    }
+
     .tab {
-      flex: 1;
-      padding: 8px;
+      padding: 8px 20px;
       border: none;
       background: transparent;
-      color: #8899aa;
-      border-radius: 8px;
-      cursor: pointer;
+      color: var(--muted);
       font-size: 13px;
       font-weight: 500;
-      transition: all 0.2s;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.15s;
+      font-family: inherit;
     }
-    .tab.active {
-      background: #0f3460;
-      color: #a8d8ea;
-    }
-    .tab:hover:not(.active) { color: #e0e0e0; }
 
-    .summary-cards {
+    .tab:hover { color: var(--text); }
+
+    .tab.active {
+      color: var(--text);
+      border-bottom-color: var(--accent2);
+    }
+
+    /* ── Scroll area ── */
+    .tab-content {
+      display: none;
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px 32px;
+    }
+
+    .tab-content.active { display: block; }
+
+    /* ── Hero metrics row ── */
+    .hero-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 20px;
     }
-    .card {
-      background: #16213e;
-      border-radius: 10px;
-      padding: 16px;
-      text-align: center;
-    }
-    .card-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: #ffd93d;
-    }
-    .card-label {
-      font-size: 11px;
-      color: #8899aa;
-      margin-top: 4px;
-    }
-    .card-comparison {
-      font-size: 11px;
-      margin-top: 4px;
-    }
-    .positive { color: #4ecdc4; }
-    .negative { color: #ff6b6b; }
-    .neutral { color: #8899aa; }
 
-    .chart-container {
-      background: #16213e;
-      border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 16px;
+    .hero-card {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      overflow: hidden;
     }
-    .chart-title {
+
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 14px 14px 0 0;
+    }
+
+    .hero-card.c-yellow::before { background: var(--yellow); }
+    .hero-card.c-blue::before   { background: var(--blue); }
+    .hero-card.c-green::before  { background: var(--green); }
+    .hero-card.c-orange::before { background: var(--orange); }
+    .hero-card.c-teal::before   { background: var(--teal); }
+    .hero-card.c-purple::before { background: var(--accent2); }
+
+    .hero-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+    }
+
+    .hero-value {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-card.c-yellow .hero-value { color: var(--yellow); }
+    .hero-card.c-blue   .hero-value { color: var(--blue); }
+    .hero-card.c-green  .hero-value { color: var(--green); }
+    .hero-card.c-orange .hero-value { color: var(--orange); }
+    .hero-card.c-teal   .hero-value { color: var(--teal); }
+    .hero-card.c-purple .hero-value { color: var(--accent2); }
+
+    .hero-sub {
+      font-size: 10px;
+      color: var(--muted2);
+    }
+
+    .hero-delta {
+      font-size: 10px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .delta-pos { color: var(--green); }
+    .delta-neg { color: var(--red); }
+    .delta-neu { color: var(--muted); }
+
+    /* ── Section header ── */
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      margin-top: 24px;
+    }
+
+    .section-header:first-of-type { margin-top: 0; }
+
+    .section-title {
       font-size: 13px;
-      color: #8899aa;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .section-hint {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── Chart card ── */
+    .chart-card {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+
+    .chart-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 12px;
     }
+
+    .chart-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .chart-peak {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
     .bar-chart {
       display: flex;
       align-items: flex-end;
-      gap: 2px;
-      height: 120px;
+      gap: 3px;
+      height: 90px;
     }
+
     .bar-wrapper {
       flex: 1;
       display: flex;
@@ -97,285 +234,825 @@
       align-items: center;
       height: 100%;
       justify-content: flex-end;
+      gap: 4px;
     }
+
     .bar {
       width: 100%;
-      max-width: 20px;
-      background: #a8d8ea;
-      border-radius: 3px 3px 0 0;
+      max-width: 24px;
+      border-radius: 4px 4px 0 0;
       min-height: 2px;
-      transition: height 0.3s;
+      transition: height 0.4s ease;
     }
-    .bar-label {
+
+    .bar.hourly { background: var(--accent); opacity: 0.75; }
+    .bar.hourly.peak { background: var(--accent2); opacity: 1; }
+    .bar.daily  { background: var(--teal); opacity: 0.75; }
+    .bar.daily.peak  { background: var(--blue); opacity: 1; }
+    .bar.monthly { background: var(--orange); opacity: 0.7; }
+    .bar.monthly.peak { background: var(--yellow); opacity: 1; }
+
+    .bar-lbl {
       font-size: 9px;
-      color: #556677;
+      color: var(--muted2);
+    }
+
+    /* ── Evolution block ── */
+    .evo-card {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+
+    .evo-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .evo-badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .evo-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .evo-next {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .prog-row {
+      margin-bottom: 12px;
+    }
+
+    .prog-row:last-child { margin-bottom: 0; }
+
+    .prog-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .prog-meta strong { color: var(--text); }
+
+    .prog-track {
+      height: 8px;
+      background: var(--surface2);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .prog-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.6s ease;
+    }
+
+    .prog-fill.keys   { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+    .prog-fill.streak { background: linear-gradient(90deg, var(--teal), var(--blue)); }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--surface2);
+      margin: 20px 0;
+    }
+
+    /* ─────────────────────────────────────────
+       SETTINGS TAB
+    ───────────────────────────────────────── */
+
+    /* Section title */
+    .s-section {
+      margin-bottom: 20px;
+    }
+
+    .s-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      padding-left: 2px;
+    }
+
+    /* ── Character picker ── */
+    .char-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .char-card {
+      position: relative;
+      background: var(--surface);
+      border: 2px solid var(--surface2);
+      border-radius: 16px;
+      padding: 16px 12px 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+
+    .char-card:hover {
+      border-color: var(--border);
+    }
+
+    .char-card.selected {
+      border-color: var(--accent2);
+      background: rgba(167, 139, 250, 0.07);
+    }
+
+    .char-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .char-gif {
+      width: 48px;
+      height: 60px;
+      image-rendering: pixelated;
+      object-fit: contain;
+    }
+
+    .char-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .char-check {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .char-card.selected .char-check {
+      background: var(--accent2);
+      border-color: var(--accent2);
+    }
+
+    .char-check::after {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .char-card.selected .char-check::after { opacity: 1; }
+
+    /* ── Radio pill group ── */
+    .radio-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .radio-grid.cols-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .radio-card {
+      position: relative;
+      background: var(--surface);
+      border: 2px solid var(--surface2);
+      border-radius: 12px;
+      padding: 11px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+
+    .radio-card:hover { border-color: var(--border); }
+
+    .radio-card.selected {
+      border-color: var(--accent2);
+      background: rgba(167, 139, 250, 0.07);
+    }
+
+    .radio-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .radio-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--surface2);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .radio-card.selected .radio-dot {
+      border-color: var(--accent2);
+      background: var(--accent2);
+    }
+
+    .radio-dot::after {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .radio-card.selected .radio-dot::after { opacity: 1; }
+
+    .radio-text {
+      flex: 1;
+    }
+
+    .radio-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .radio-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .radio-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ── Corner picker (2x2 visual grid) ── */
+    .corner-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 8px;
+    }
+
+    /* ── Toggle row (autostart) ── */
+    .toggle-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .toggle-info {
+      flex: 1;
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .toggle-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Custom toggle switch */
+    .toggle-switch {
+      position: relative;
+      width: 42px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0; height: 0;
+      position: absolute;
+    }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 99px;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .toggle-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: transform 0.2s, background 0.2s;
+      pointer-events: none;
+    }
+
+    .toggle-switch input:checked + .toggle-track {
+      background: var(--accent2);
+      border-color: var(--accent2);
+    }
+
+    .toggle-switch input:checked + .toggle-track .toggle-thumb {
+      transform: translateX(18px);
+      background: #fff;
+    }
+
+    /* ── Pomodoro stepper ── */
+    .pom-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .pom-card {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pom-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .pom-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      text-align: center;
+    }
+
+    .pom-stepper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pom-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      border: none;
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+
+    .pom-btn:hover { background: var(--border); }
+    .pom-btn:active { background: var(--accent); }
+
+    .pom-val {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 28px;
+      text-align: center;
+    }
+
+    .pom-unit {
+      font-size: 10px;
+      color: var(--muted2);
+    }
+
+    /* hidden real inputs for form compat */
+    .pom-input { display: none; }
+
+    .save-indicator {
+      font-size: 11px;
+      color: var(--green);
+      text-align: center;
+      height: 16px;
+      opacity: 0;
+      transition: opacity 0.3s;
       margin-top: 4px;
     }
 
-    .evolution-section {
-      background: #16213e;
-      border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-    .evolution-title {
-      font-size: 13px;
-      color: #8899aa;
-      margin-bottom: 12px;
-    }
-    .progress-bar {
-      background: #0f3460;
-      border-radius: 6px;
-      height: 12px;
-      margin-bottom: 8px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      border-radius: 6px;
-      transition: width 0.5s;
-    }
-    .progress-keys .progress-fill { background: #ffd93d; }
-    .progress-streak .progress-fill { background: #4ecdc4; }
-    .progress-label {
-      font-size: 11px;
-      color: #8899aa;
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .settings-section {
-      background: #16213e;
-      border-radius: 10px;
-      padding: 16px;
-    }
-    .setting-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid #1a2a4a;
-    }
-    .setting-row:last-child { border-bottom: none; }
-    .setting-label {
-      font-size: 13px;
-      color: #e0e0e0;
-    }
-    select, button.setting-btn {
-      background: #0f3460;
-      color: #a8d8ea;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    select:focus { outline: 1px solid #a8d8ea; }
-    input[type="number"].setting-num {
-      background: #0f3460;
-      color: #a8d8ea;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 12px;
-      width: 72px;
-      text-align: center;
-    }
-    input[type="number"].setting-num:focus { outline: 1px solid #a8d8ea; }
-    .settings-group-title {
-      font-size: 11px;
-      color: #556677;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      padding: 12px 0 4px;
-    }
+    /* ── Danger zone ── */
     .btn-reset {
-      background: transparent;
-      color: #ff6b6b;
-      border: 1px solid #ff6b6b;
-      border-radius: 6px;
-      padding: 8px 16px;
-      cursor: pointer;
-      font-size: 12px;
-      margin-top: 12px;
-      display: block;
       width: 100%;
+      padding: 13px;
+      background: rgba(255,69,58,0.08);
+      color: var(--red);
+      border: 1px solid rgba(255,69,58,0.3);
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-    .btn-reset:hover { background: #2a1a1a; }
 
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .btn-reset:hover {
+      background: rgba(255,69,58,0.16);
+      border-color: rgba(255,69,58,0.5);
+    }
   </style>
 </head>
 <body>
-  <h1>KeyPet Estadísticas</h1>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="today">Hoy</button>
-    <button class="tab" data-tab="week">Semana</button>
-    <button class="tab" data-tab="month">Mes</button>
+  <!-- Top bar -->
+  <div class="topbar">
+    <img class="topbar-icon" src="../../assets/logo.png" alt="KeyPet">
+    <div class="topbar-title">KeyPet</div>
+  </div>
+
+  <!-- Tab switcher -->
+  <div class="tab-bar">
+    <button class="tab active" data-tab="stats">Estadísticas</button>
     <button class="tab" data-tab="settings">Ajustes</button>
   </div>
 
-  <div id="tab-today" class="tab-content active">
-    <div class="summary-cards">
-      <div class="card">
-        <div class="card-value" id="today-val">0</div>
-        <div class="card-label">Teclas hoy</div>
-        <div class="card-comparison" id="today-cmp"></div>
+  <!-- ══════════════════════════════
+       TAB: ESTADÍSTICAS
+  ══════════════════════════════ -->
+  <div id="tab-stats" class="tab-content active">
+
+    <!-- Hero metrics -->
+    <div class="hero-row">
+      <div class="hero-card c-yellow">
+        <span class="hero-label">Hoy</span>
+        <span class="hero-value" id="today-val">0</span>
+        <span class="hero-sub">teclas</span>
+        <span class="hero-delta" id="today-delta"></span>
       </div>
-      <div class="card">
-        <div class="card-value" id="streak-val">0</div>
-        <div class="card-label">Racha de días</div>
+      <div class="hero-card c-blue">
+        <span class="hero-label">Semana</span>
+        <span class="hero-value" id="week-val">0</span>
+        <span class="hero-sub">teclas</span>
+        <span class="hero-delta" id="week-delta"></span>
       </div>
-      <div class="card">
-        <div class="card-value" id="total-val">0</div>
-        <div class="card-label">Total histórico</div>
+      <div class="hero-card c-orange">
+        <span class="hero-label">Mes</span>
+        <span class="hero-value" id="month-val">0</span>
+        <span class="hero-sub">teclas</span>
+        <span class="hero-delta" id="month-delta"></span>
       </div>
     </div>
-    <div class="chart-container">
-      <div class="chart-title">Actividad por hora hoy</div>
+
+    <div class="hero-row">
+      <div class="hero-card c-green">
+        <span class="hero-label">Racha</span>
+        <span class="hero-value" id="streak-val">0</span>
+        <span class="hero-sub">días</span>
+      </div>
+      <div class="hero-card c-teal">
+        <span class="hero-label">Histórico</span>
+        <span class="hero-value" id="total-val">0</span>
+        <span class="hero-sub">total</span>
+      </div>
+      <div class="hero-card c-purple">
+        <span class="hero-label">Nivel</span>
+        <span class="hero-value" id="level-val">1</span>
+        <span class="hero-sub">evolución</span>
+      </div>
+    </div>
+
+    <!-- Hourly chart -->
+    <div class="section-header">
+      <span class="section-title">Actividad por hora — hoy</span>
+      <span class="section-hint" id="hourly-peak-hint"></span>
+    </div>
+    <div class="chart-card">
       <div class="bar-chart" id="hourly-chart"></div>
     </div>
-    <div class="evolution-section">
-      <div class="evolution-title">Progreso de evolución (Nivel <span id="evo-level">1</span>)</div>
-      <div class="progress-label">
-        <span>Teclas</span>
-        <span id="evo-keys-label">0 / 50,000</span>
-      </div>
-      <div class="progress-bar progress-keys">
-        <div class="progress-fill" id="evo-keys-bar" style="width: 0%"></div>
-      </div>
-      <div class="progress-label">
-        <span>Racha de días</span>
-        <span id="evo-streak-label">0 / 7</span>
-      </div>
-      <div class="progress-bar progress-streak">
-        <div class="progress-fill" id="evo-streak-bar" style="width: 0%"></div>
-      </div>
-    </div>
-  </div>
 
-  <div id="tab-week" class="tab-content">
-    <div class="summary-cards">
-      <div class="card">
-        <div class="card-value" id="week-val">0</div>
-        <div class="card-label">Esta semana</div>
-        <div class="card-comparison" id="week-cmp"></div>
-      </div>
-      <div class="card">
-        <div class="card-value" id="streak-val-2">0</div>
-        <div class="card-label">Racha de días</div>
-      </div>
-      <div class="card">
-        <div class="card-value" id="total-val-2">0</div>
-        <div class="card-label">Total histórico</div>
-      </div>
+    <!-- Weekly chart -->
+    <div class="section-header">
+      <span class="section-title">Últimos 7 días</span>
+      <span class="section-hint" id="weekly-peak-hint"></span>
     </div>
-    <div class="chart-container">
-      <div class="chart-title">Actividad diaria (últimos 7 días)</div>
+    <div class="chart-card">
       <div class="bar-chart" id="weekly-chart"></div>
     </div>
-  </div>
 
-  <div id="tab-month" class="tab-content">
-    <div class="summary-cards">
-      <div class="card">
-        <div class="card-value" id="month-val">0</div>
-        <div class="card-label">Este mes</div>
-        <div class="card-comparison" id="month-cmp"></div>
+    <!-- Evolution progress -->
+    <div class="section-header">
+      <span class="section-title">Progreso de evolución</span>
+    </div>
+    <div class="evo-card">
+      <div class="evo-header">
+        <span class="evo-badge" id="evo-badge">Nv. 1</span>
+        <span class="evo-title" id="evo-title">Huevo</span>
+        <span class="evo-next" id="evo-next"></span>
       </div>
-      <div class="card">
-        <div class="card-value" id="streak-val-3">0</div>
-        <div class="card-label">Racha de días</div>
+      <div class="prog-row">
+        <div class="prog-meta">
+          <span>Teclas acumuladas</span>
+          <span><strong id="evo-keys-cur">0</strong> / <span id="evo-keys-max">50K</span></span>
+        </div>
+        <div class="prog-track">
+          <div class="prog-fill keys" id="evo-keys-bar" style="width:0%"></div>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-value" id="total-val-3">0</div>
-        <div class="card-label">Total histórico</div>
+      <div class="prog-row">
+        <div class="prog-meta">
+          <span>Racha de días</span>
+          <span><strong id="evo-streak-cur">0</strong> / <span id="evo-streak-max">7</span></span>
+        </div>
+        <div class="prog-track">
+          <div class="prog-fill streak" id="evo-streak-bar" style="width:0%"></div>
+        </div>
       </div>
     </div>
-  </div>
 
+  </div><!-- /tab-stats -->
+
+  <!-- ══════════════════════════════
+       TAB: AJUSTES
+  ══════════════════════════════ -->
   <div id="tab-settings" class="tab-content">
-    <div class="settings-section">
-      <div class="setting-row">
-        <span class="setting-label">Posición del pet</span>
-        <select id="setting-corner">
-          <option value="top-left">Arriba izquierda</option>
-          <option value="top-right">Arriba derecha</option>
-          <option value="bottom-left">Abajo izquierda</option>
-          <option value="bottom-right">Abajo derecha</option>
-        </select>
+
+    <!-- Personaje -->
+    <div class="s-section">
+      <div class="s-title">Personaje</div>
+      <div class="char-grid">
+        <label class="char-card" id="char-chico">
+          <input type="radio" name="character" value="chico">
+          <div class="char-check"></div>
+          <img class="char-gif" src="../../assets/chico/idle.gif" alt="Chico">
+          <span class="char-name">Chico</span>
+        </label>
+        <label class="char-card" id="char-chica">
+          <input type="radio" name="character" value="chica">
+          <div class="char-check"></div>
+          <img class="char-gif" src="../../assets/chica/idle.gif" alt="Chica">
+          <span class="char-name">Chica</span>
+        </label>
       </div>
-      <div class="setting-row">
-        <span class="setting-label">Personaje</span>
-        <select id="setting-character">
-          <option value="chico">Chico</option>
-          <option value="chica">Chica</option>
-        </select>
-      </div>
-      <div class="setting-row">
-        <span class="setting-label">Tamaño del pet</span>
-        <select id="setting-size">
-          <option value="xxsmall">Extra extra pequeño</option>
-          <option value="xsmall">Extra pequeño</option>
-          <option value="small">Pequeño</option>
-          <option value="normal">Normal</option>
-          <option value="large">Grande</option>
-        </select>
-      </div>
-      <div class="setting-row">
-        <span class="setting-label">Notificaciones</span>
-        <select id="setting-notifications">
-          <option value="all">Todas</option>
-          <option value="evolution">Solo evolución</option>
-          <option value="none">Ninguna</option>
-        </select>
-      </div>
-      <div class="setting-row">
-        <span class="setting-label">Arrancar con el sistema</span>
-        <input type="checkbox" id="setting-autostart" style="width:18px;height:18px;cursor:pointer;accent-color:#a8d8ea;">
-      </div>
-      <div class="settings-group-title">Pomodoro</div>
-      <div class="setting-row">
-        <span class="setting-label">Trabajo (minutos)</span>
-        <input type="number" id="setting-pom-work" class="setting-num" min="1" max="120" step="1">
-      </div>
-      <div class="setting-row">
-        <span class="setting-label">Descanso corto (minutos)</span>
-        <input type="number" id="setting-pom-short" class="setting-num" min="1" max="60" step="1">
-      </div>
-      <div class="setting-row">
-        <span class="setting-label">Descanso largo (minutos)</span>
-        <input type="number" id="setting-pom-long" class="setting-num" min="1" max="120" step="1">
-      </div>
-      <div id="pom-saved-msg" style="font-size:11px;color:#4ecdc4;text-align:right;height:16px;margin-top:2px;opacity:0;transition:opacity 0.3s;"></div>
-      <button class="btn-reset" id="btn-reset">Reiniciar pet (borrar todos los datos)</button>
     </div>
-  </div>
+
+    <!-- Tamaño del pet -->
+    <div class="s-section">
+      <div class="s-title">Tamaño del pet</div>
+      <div class="radio-grid cols-2">
+        <label class="radio-card" data-group="size" data-val="xxsmall">
+          <input type="radio" name="size" value="xxsmall">
+          <span class="radio-icon">🔬</span>
+          <div class="radio-text">
+            <div class="radio-label">XX Pequeño</div>
+            <div class="radio-sub">48 × 60 px</div>
+          </div>
+          <div class="radio-dot"></div>
+        </label>
+        <label class="radio-card" data-group="size" data-val="xsmall">
+          <input type="radio" name="size" value="xsmall">
+          <span class="radio-icon">🔹</span>
+          <div class="radio-text">
+            <div class="radio-label">X Pequeño</div>
+            <div class="radio-sub">64 × 80 px</div>
+          </div>
+          <div class="radio-dot"></div>
+        </label>
+        <label class="radio-card" data-group="size" data-val="small">
+          <input type="radio" name="size" value="small">
+          <span class="radio-icon">🐣</span>
+          <div class="radio-text">
+            <div class="radio-label">Pequeño</div>
+            <div class="radio-sub">96 × 120 px</div>
+          </div>
+          <div class="radio-dot"></div>
+        </label>
+        <label class="radio-card" data-group="size" data-val="normal">
+          <input type="radio" name="size" value="normal">
+          <span class="radio-icon">🐥</span>
+          <div class="radio-text">
+            <div class="radio-label">Normal</div>
+            <div class="radio-sub">128 × 160 px</div>
+          </div>
+          <div class="radio-dot"></div>
+        </label>
+        <label class="radio-card" data-group="size" data-val="large" style="grid-column: 1 / -1">
+          <input type="radio" name="size" value="large">
+          <span class="radio-icon">🐓</span>
+          <div class="radio-text">
+            <div class="radio-label">Grande</div>
+            <div class="radio-sub">192 × 240 px</div>
+          </div>
+          <div class="radio-dot"></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Posición inicial -->
+    <div class="s-section">
+      <div class="s-title">Posición inicial</div>
+      <div class="corner-grid">
+        <label class="radio-card" data-group="corner" data-val="top-left">
+          <input type="radio" name="corner" value="top-left">
+          <span class="radio-icon">↖</span>
+          <div class="radio-text"><div class="radio-label">Arriba izq.</div></div>
+          <div class="radio-dot"></div>
+        </label>
+        <label class="radio-card" data-group="corner" data-val="top-right">
+          <input type="radio" name="corner" value="top-right">
+          <span class="radio-icon">↗</span>
+          <div class="radio-text"><div class="radio-label">Arriba der.</div></div>
+          <div class="radio-dot"></div>
+        </label>
+        <label class="radio-card" data-group="corner" data-val="bottom-left">
+          <input type="radio" name="corner" value="bottom-left">
+          <span class="radio-icon">↙</span>
+          <div class="radio-text"><div class="radio-label">Abajo izq.</div></div>
+          <div class="radio-dot"></div>
+        </label>
+        <label class="radio-card" data-group="corner" data-val="bottom-right">
+          <input type="radio" name="corner" value="bottom-right">
+          <span class="radio-icon">↘</span>
+          <div class="radio-text"><div class="radio-label">Abajo der.</div></div>
+          <div class="radio-dot"></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Notificaciones -->
+    <div class="s-section">
+      <div class="s-title">Notificaciones</div>
+      <div class="radio-grid">
+        <label class="radio-card" data-group="notifications" data-val="all">
+          <input type="radio" name="notifications" value="all">
+          <span class="radio-icon">🔔</span>
+          <div class="radio-text">
+            <div class="radio-label">Todas</div>
+            <div class="radio-sub">Evolución, rachas y logros</div>
+          </div>
+          <div class="radio-dot"></div>
+        </label>
+        <label class="radio-card" data-group="notifications" data-val="evolution">
+          <input type="radio" name="notifications" value="evolution">
+          <span class="radio-icon">✨</span>
+          <div class="radio-text">
+            <div class="radio-label">Solo evolución</div>
+            <div class="radio-sub">Solo cuando el pet evoluciona</div>
+          </div>
+          <div class="radio-dot"></div>
+        </label>
+        <label class="radio-card" data-group="notifications" data-val="none">
+          <input type="radio" name="notifications" value="none">
+          <span class="radio-icon">🔕</span>
+          <div class="radio-text">
+            <div class="radio-label">Ninguna</div>
+            <div class="radio-sub">Silencio total</div>
+          </div>
+          <div class="radio-dot"></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Sistema -->
+    <div class="s-section">
+      <div class="s-title">Sistema</div>
+      <div class="toggle-card">
+        <div class="toggle-info">
+          <div class="toggle-label">Arrancar con el sistema</div>
+          <div class="toggle-sub">Abrir KeyPet al iniciar sesión</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="setting-autostart">
+          <div class="toggle-track">
+            <div class="toggle-thumb"></div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Pomodoro -->
+    <div class="s-section">
+      <div class="s-title">Pomodoro</div>
+      <div class="pom-grid">
+        <div class="pom-card">
+          <div class="pom-icon">🍅</div>
+          <div class="pom-name">Trabajo</div>
+          <div class="pom-stepper">
+            <button class="pom-btn" data-target="pom-work" data-delta="-1">−</button>
+            <span class="pom-val" id="pom-work-val">25</span>
+            <button class="pom-btn" data-target="pom-work" data-delta="1">+</button>
+          </div>
+          <div class="pom-unit">minutos</div>
+          <input type="number" id="setting-pom-work" class="pom-input" min="1" max="120" value="25">
+        </div>
+        <div class="pom-card">
+          <div class="pom-icon">☕</div>
+          <div class="pom-name">Descanso corto</div>
+          <div class="pom-stepper">
+            <button class="pom-btn" data-target="pom-short" data-delta="-1">−</button>
+            <span class="pom-val" id="pom-short-val">5</span>
+            <button class="pom-btn" data-target="pom-short" data-delta="1">+</button>
+          </div>
+          <div class="pom-unit">minutos</div>
+          <input type="number" id="setting-pom-short" class="pom-input" min="1" max="60" value="5">
+        </div>
+        <div class="pom-card">
+          <div class="pom-icon">🛋️</div>
+          <div class="pom-name">Descanso largo</div>
+          <div class="pom-stepper">
+            <button class="pom-btn" data-target="pom-long" data-delta="-1">−</button>
+            <span class="pom-val" id="pom-long-val">15</span>
+            <button class="pom-btn" data-target="pom-long" data-delta="1">+</button>
+          </div>
+          <div class="pom-unit">minutos</div>
+          <input type="number" id="setting-pom-long" class="pom-input" min="1" max="120" value="15">
+        </div>
+      </div>
+      <div class="save-indicator" id="pom-saved-msg">Guardado</div>
+    </div>
+
+    <!-- Peligro -->
+    <div class="s-section">
+      <button class="btn-reset" id="btn-reset">
+        <span>⚠</span> Reiniciar pet y borrar todos los datos
+      </button>
+    </div>
+
+  </div><!-- /tab-settings -->
 
 <script>
   const EVOLUTION = [
-    { level: 1, keys: 0, streak: 0 },
-    { level: 2, keys: 50000, streak: 7 },
-    { level: 3, keys: 500000, streak: 30 },
+    { level: 1, name: 'Huevo',   keys: 50000,  streak: 7  },
+    { level: 2, name: 'Pollito', keys: 500000, streak: 30 },
+    { level: 3, name: 'Máximo',  keys: Infinity, streak: Infinity },
   ];
 
-  function formatNum(n) {
+  function fmt(n) {
     if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
     return String(n);
   }
 
-  function formatComparison(pct) {
-    if (pct === 0) return '';
-    const cls = pct > 0 ? 'positive' : 'negative';
+  function delta(pct) {
+    if (!pct || pct === 0) return { text: '', cls: 'delta-neu' };
     const sign = pct > 0 ? '+' : '';
-    return `<span class="${cls}">${sign}${Math.round(pct)}% vs anterior</span>`;
+    return {
+      text: sign + Math.round(pct) + '% vs anterior',
+      cls: pct > 0 ? 'delta-pos' : 'delta-neg'
+    };
   }
 
-  // Tabs
+  // ── Tab switch ──
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -385,130 +1062,215 @@
     });
   });
 
-  function buildBarChart(container, data, labelFn) {
+  // ── Bar charts ──
+  function buildBarChart(containerId, data, labelFn, barClass) {
+    const container = document.getElementById(containerId);
     container.innerHTML = '';
     const max = Math.max(...data.map(d => d.value), 1);
-    data.forEach(d => {
+    const peakIdx = data.reduce((best, d, i) => d.value > data[best].value ? i : best, 0);
+    data.forEach((d, i) => {
       const wrapper = document.createElement('div');
       wrapper.className = 'bar-wrapper';
       const bar = document.createElement('div');
-      bar.className = 'bar';
-      bar.style.height = Math.max((d.value / max) * 100, 1) + '%';
-      const label = document.createElement('div');
-      label.className = 'bar-label';
-      label.textContent = labelFn(d);
+      bar.className = 'bar ' + barClass + (i === peakIdx && d.value > 0 ? ' peak' : '');
+      bar.style.height = Math.max((d.value / max) * 100, d.value > 0 ? 3 : 1) + '%';
+      const lbl = document.createElement('div');
+      lbl.className = 'bar-lbl';
+      lbl.textContent = labelFn(d, i);
       wrapper.appendChild(bar);
-      wrapper.appendChild(label);
+      wrapper.appendChild(lbl);
       container.appendChild(wrapper);
     });
+    return max;
   }
 
   async function loadStats() {
     const stats = await window.keypet.getStats();
 
-    // Today tab
-    document.getElementById('today-val').textContent = formatNum(stats.today);
-    document.getElementById('today-cmp').innerHTML = formatComparison(stats.todayComparison);
+    // Hero row 1
+    const d1 = delta(stats.todayComparison);
+    const el1 = document.getElementById('today-delta');
+    el1.textContent = d1.text; el1.className = 'hero-delta ' + d1.cls;
+
+    document.getElementById('today-val').textContent  = fmt(stats.today);
+    document.getElementById('week-val').textContent   = fmt(stats.thisWeek);
+    document.getElementById('month-val').textContent  = fmt(stats.thisMonth);
+
+    const dw = delta(stats.weekComparison);
+    const ewEl = document.getElementById('week-delta');
+    ewEl.textContent = dw.text; ewEl.className = 'hero-delta ' + dw.cls;
+
+    const dm = delta(stats.monthComparison);
+    const emEl = document.getElementById('month-delta');
+    emEl.textContent = dm.text; emEl.className = 'hero-delta ' + dm.cls;
+
+    // Hero row 2
     document.getElementById('streak-val').textContent = stats.streak;
-    document.getElementById('total-val').textContent = formatNum(stats.totalHistoric);
+    document.getElementById('total-val').textContent  = fmt(stats.totalHistoric);
+    document.getElementById('level-val').textContent  = stats.evolutionLevel;
 
     // Hourly chart
     const hourlyData = stats.hourlyToday.map((v, i) => ({ value: v, hour: i }));
-    buildBarChart(
-      document.getElementById('hourly-chart'),
-      hourlyData,
-      d => d.hour % 3 === 0 ? d.hour + 'h' : ''
-    );
+    const hourMax = buildBarChart('hourly-chart', hourlyData, (d, i) => i % 4 === 0 ? d.hour + 'h' : '', 'hourly');
+    document.getElementById('hourly-peak-hint').textContent =
+      hourMax > 0 ? 'pico: ' + fmt(hourMax) + ' teclas' : '';
+
+    // Weekly chart
+    const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const weeklyData = stats.weeklyDays.map(d => ({ value: d.count, date: d.date }));
+    const weekMax = buildBarChart('weekly-chart', weeklyData,
+      d => dayNames[new Date(d.date + 'T12:00:00').getDay()], 'daily');
+    document.getElementById('weekly-peak-hint').textContent =
+      weekMax > 0 ? 'pico: ' + fmt(weekMax) + ' teclas' : '';
 
     // Evolution
-    const level = stats.evolutionLevel;
-    document.getElementById('evo-level').textContent = level;
-    const nextLevel = EVOLUTION.find(e => e.level > level) || EVOLUTION[EVOLUTION.length - 1];
-    const keysProgress = nextLevel.keys > 0 ? Math.min((stats.totalForEvolution / nextLevel.keys) * 100, 100) : 100;
-    const streakProgress = nextLevel.streak > 0 ? Math.min((stats.streakForEvolution / nextLevel.streak) * 100, 100) : 100;
-    document.getElementById('evo-keys-bar').style.width = keysProgress + '%';
-    document.getElementById('evo-keys-label').textContent =
-      formatNum(stats.totalForEvolution) + ' / ' + formatNum(nextLevel.keys);
-    document.getElementById('evo-streak-bar').style.width = streakProgress + '%';
-    document.getElementById('evo-streak-label').textContent =
-      stats.streakForEvolution + ' / ' + nextLevel.streak;
+    const lvl = stats.evolutionLevel;
+    const cur = EVOLUTION.find(e => e.level === lvl) || EVOLUTION[0];
+    const nxt = EVOLUTION.find(e => e.level > lvl);
+    document.getElementById('evo-badge').textContent = 'Nv. ' + lvl;
+    document.getElementById('evo-title').textContent = cur.name;
 
-    // Week tab
-    document.getElementById('week-val').textContent = formatNum(stats.thisWeek);
-    document.getElementById('week-cmp').innerHTML = formatComparison(stats.weekComparison);
-    document.getElementById('streak-val-2').textContent = stats.streak;
-    document.getElementById('total-val-2').textContent = formatNum(stats.totalHistoric);
-
-    const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-    buildBarChart(
-      document.getElementById('weekly-chart'),
-      stats.weeklyDays.map(d => ({ value: d.count, date: d.date })),
-      d => dayNames[new Date(d.date + 'T12:00:00').getDay()]
-    );
-
-    // Month tab
-    document.getElementById('month-val').textContent = formatNum(stats.thisMonth);
-    document.getElementById('month-cmp').innerHTML = formatComparison(stats.monthComparison);
-    document.getElementById('streak-val-3').textContent = stats.streak;
-    document.getElementById('total-val-3').textContent = formatNum(stats.totalHistoric);
+    if (nxt && nxt.keys !== Infinity) {
+      document.getElementById('evo-next').textContent = 'Siguiente: Nv. ' + nxt.level;
+      const kPct = Math.min((stats.totalForEvolution / nxt.keys) * 100, 100);
+      const sPct = Math.min((stats.streakForEvolution / nxt.streak) * 100, 100);
+      document.getElementById('evo-keys-bar').style.width  = kPct + '%';
+      document.getElementById('evo-streak-bar').style.width = sPct + '%';
+      document.getElementById('evo-keys-cur').textContent   = fmt(stats.totalForEvolution);
+      document.getElementById('evo-keys-max').textContent   = fmt(nxt.keys);
+      document.getElementById('evo-streak-cur').textContent = stats.streakForEvolution;
+      document.getElementById('evo-streak-max').textContent = nxt.streak;
+    } else {
+      document.getElementById('evo-next').textContent = 'Nivel máximo';
+      document.getElementById('evo-keys-bar').style.width   = '100%';
+      document.getElementById('evo-streak-bar').style.width = '100%';
+    }
   }
 
   async function loadSettings() {
-    const settings = await window.keypet.getSettings();
-    document.getElementById('setting-corner').value = settings.corner;
-    document.getElementById('setting-character').value = settings.character ?? 'chico';
-    document.getElementById('setting-size').value = settings.size;
-    document.getElementById('setting-notifications').value = settings.notifications;
-    document.getElementById('setting-autostart').checked = settings.autoStart;
-    document.getElementById('setting-pom-work').value  = settings.pomodoroWork  ?? 25;
-    document.getElementById('setting-pom-short').value = settings.pomodoroShortBreak ?? 5;
-    document.getElementById('setting-pom-long').value  = settings.pomodoroLongBreak  ?? 15;
+    const s = await window.keypet.getSettings();
+
+    // Character
+    setRadioCards('character', s.character ?? 'chico');
+
+    // Size
+    setRadioCards('size', s.size);
+
+    // Corner
+    setRadioCards('corner', s.corner);
+
+    // Notifications
+    setRadioCards('notifications', s.notifications);
+
+    // Autostart
+    document.getElementById('setting-autostart').checked = s.autoStart;
+
+    // Pomodoro steppers
+    setPomVal('pom-work',  s.pomodoroWork       ?? 25);
+    setPomVal('pom-short', s.pomodoroShortBreak ?? 5);
+    setPomVal('pom-long',  s.pomodoroLongBreak  ?? 15);
   }
 
-  // Auto-save settings on change
+  function setRadioCards(name, value) {
+    document.querySelectorAll(`[data-group="${name}"]`).forEach(card => {
+      const isSelected = card.dataset.val === value;
+      card.classList.toggle('selected', isSelected);
+      const radio = card.querySelector('input[type="radio"]');
+      if (radio) radio.checked = isSelected;
+    });
+    // char-card special case (uses id)
+    if (name === 'character') {
+      ['chico', 'chica'].forEach(v => {
+        const card = document.getElementById('char-' + v);
+        if (card) {
+          const isSelected = v === value;
+          card.classList.toggle('selected', isSelected);
+          const radio = card.querySelector('input[type="radio"]');
+          if (radio) radio.checked = isSelected;
+        }
+      });
+    }
+  }
+
+  function setPomVal(key, val) {
+    const idMap = { 'pom-work': 'setting-pom-work', 'pom-short': 'setting-pom-short', 'pom-long': 'setting-pom-long' };
+    document.getElementById(key + '-val').textContent = val;
+    document.getElementById(idMap[key]).value = val;
+  }
+
   async function saveCurrentSettings() {
-    const settings = await window.keypet.getSettings();
-    settings.corner        = document.getElementById('setting-corner').value;
-    settings.character     = document.getElementById('setting-character').value;
-    settings.size          = document.getElementById('setting-size').value;
-    settings.notifications = document.getElementById('setting-notifications').value;
-    settings.autoStart     = document.getElementById('setting-autostart').checked;
+    const s = await window.keypet.getSettings();
+    s.corner        = document.querySelector('[data-group="corner"].selected')?.dataset.val        ?? s.corner;
+    s.character     = document.querySelector('[data-group="character"].selected')?.dataset.val     ?? s.character;
+    s.size          = document.querySelector('[data-group="size"].selected')?.dataset.val          ?? s.size;
+    s.notifications = document.querySelector('[data-group="notifications"].selected')?.dataset.val ?? s.notifications;
+    s.autoStart     = document.getElementById('setting-autostart').checked;
+    // character also from char-card
+    const charSel = document.querySelector('.char-card.selected input[type="radio"]');
+    if (charSel) s.character = charSel.value;
     const work  = parseInt(document.getElementById('setting-pom-work').value, 10);
     const short = parseInt(document.getElementById('setting-pom-short').value, 10);
     const long  = parseInt(document.getElementById('setting-pom-long').value, 10);
-    if (work  >= 1 && work  <= 120) settings.pomodoroWork        = work;
-    if (short >= 1 && short <=  60) settings.pomodoroShortBreak  = short;
-    if (long  >= 1 && long  <= 120) settings.pomodoroLongBreak   = long;
-    await window.keypet.saveSettings(settings);
+    if (work  >= 1 && work  <= 120) s.pomodoroWork        = work;
+    if (short >= 1 && short <=  60) s.pomodoroShortBreak  = short;
+    if (long  >= 1 && long  <= 120) s.pomodoroLongBreak   = long;
+    await window.keypet.saveSettings(s);
   }
 
-  // Selects and checkbox: save immediately on change
-  document.querySelectorAll('#tab-settings select').forEach(sel => {
-    sel.addEventListener('change', saveCurrentSettings);
-  });
-  document.getElementById('setting-autostart').addEventListener('change', saveCurrentSettings);
-
-  // Pomodoro number inputs: debounce + "Guardado" feedback
-  let pomDebounceTimer = null;
-  const pomSavedMsg = document.getElementById('pom-saved-msg');
-  let pomSavedFadeTimer = null;
-
-  async function savePomodoroSettings() {
-    await saveCurrentSettings();
-    pomSavedMsg.textContent = 'Guardado';
-    pomSavedMsg.style.opacity = '1';
-    if (pomSavedFadeTimer) clearTimeout(pomSavedFadeTimer);
-    pomSavedFadeTimer = setTimeout(() => { pomSavedMsg.style.opacity = '0'; }, 1500);
-  }
-
-  ['setting-pom-work', 'setting-pom-short', 'setting-pom-long'].forEach(id => {
-    document.getElementById(id).addEventListener('input', () => {
-      pomSavedMsg.style.opacity = '0';
-      if (pomDebounceTimer) clearTimeout(pomDebounceTimer);
-      pomDebounceTimer = setTimeout(savePomodoroSettings, 800);
+  // Radio card click handlers
+  document.querySelectorAll('.radio-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const group = card.dataset.group;
+      const val   = card.dataset.val;
+      if (!group || !val) return;
+      setRadioCards(group, val);
+      saveCurrentSettings();
     });
   });
 
+  // Character card click handlers
+  document.querySelectorAll('.char-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      const radio = card.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
+      saveCurrentSettings();
+    });
+  });
+
+  // Autostart toggle
+  document.getElementById('setting-autostart').addEventListener('change', saveCurrentSettings);
+
+  // Pomodoro steppers
+  const pomMsg = document.getElementById('pom-saved-msg');
+  let pomTimer = null;
+  let pomFadeTimer = null;
+  const pomLimits = { 'pom-work': [1,120], 'pom-short': [1,60], 'pom-long': [1,120] };
+  const pomInputIds = { 'pom-work': 'setting-pom-work', 'pom-short': 'setting-pom-short', 'pom-long': 'setting-pom-long' };
+
+  document.querySelectorAll('.pom-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key   = btn.dataset.target;
+      const delta = parseInt(btn.dataset.delta, 10);
+      const [min, max] = pomLimits[key];
+      const input = document.getElementById(pomInputIds[key]);
+      let cur = parseInt(input.value, 10);
+      cur = Math.min(max, Math.max(min, cur + delta));
+      input.value = cur;
+      document.getElementById(key + '-val').textContent = cur;
+      pomMsg.style.opacity = '0';
+      if (pomTimer) clearTimeout(pomTimer);
+      pomTimer = setTimeout(async () => {
+        await saveCurrentSettings();
+        pomMsg.style.opacity = '1';
+        if (pomFadeTimer) clearTimeout(pomFadeTimer);
+        pomFadeTimer = setTimeout(() => { pomMsg.style.opacity = '0'; }, 1500);
+      }, 500);
+    });
+  });
+
+  // Reset
   document.getElementById('btn-reset').addEventListener('click', async () => {
     if (confirm('¿Seguro? Esto borrará TODOS los datos y reiniciará tu pet al Nivel 1.')) {
       await window.keypet.resetPet();
@@ -516,24 +1278,23 @@
     }
   });
 
-  // Load on open
-  loadStats();
-  loadSettings();
-
-  // Refresh every 10s
-  setInterval(loadStats, 10000);
-
-  // Navigate to a specific tab when requested from main process
+  // Navigate to a tab from main process (e.g. "open settings" from tray)
   if (window.keypet.onNavigateTab) {
     window.keypet.onNavigateTab((tab) => {
+      const mapped = (tab === 'today' || tab === 'week' || tab === 'month') ? 'stats' : tab;
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      const btn = document.querySelector(`.tab[data-tab="${tab}"]`);
-      const content = document.getElementById('tab-' + tab);
+      const btn = document.querySelector(`.tab[data-tab="${mapped}"]`);
+      const content = document.getElementById('tab-' + mapped);
       if (btn) btn.classList.add('active');
       if (content) content.classList.add('active');
     });
   }
+
+  // Init
+  loadStats();
+  loadSettings();
+  setInterval(loadStats, 10000);
 </script>
 </body>
 </html>

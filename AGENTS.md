@@ -15,6 +15,8 @@ Guidance for agentic coding agents working in this repository.
 - `src/renderer/` — Browser-side UI (plain HTML + vanilla JS). **NOT compiled** — copied verbatim to `dist/renderer/` by `scripts/copy-renderer.js`.
 
 ---
+## PRINCIPAL RULE
+ALWAYS use the engram MCP to understand the full application context 
 
 ## Build & Run Commands
 
