@@ -19,15 +19,15 @@
     .header {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 14px 16px 12px;
+      gap: 12px;
+      padding: 16px 18px 14px;
       border-bottom: 1px solid #2c2c2e;
     }
 
     .header-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
       flex-shrink: 0;
       image-rendering: pixelated;
     }
@@ -37,7 +37,7 @@
     }
 
     .header-title {
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 600;
       color: #f2f2f7;
       line-height: 1;
@@ -46,7 +46,7 @@
     .header-sub {
       font-size: 11px;
       color: #636366;
-      margin-top: 2px;
+      margin-top: 3px;
     }
 
     /* ── Stats badges row ── */
@@ -211,7 +211,7 @@
 
     .footer-version {
       font-size: 10px;
-      color: #3a3a3c;
+      color: #8e8e93;
       text-align: center;
     }
   </style>
@@ -280,7 +280,7 @@
   </div>
 
   <div class="footer">
-    <div class="footer-version">KeyPet v1.0</div>
+    <div class="footer-version" id="app-version">KeyPet</div>
   </div>
 
 <script>
@@ -334,6 +334,11 @@
 
   document.getElementById('btn-quit').addEventListener('click', () => {
     window.keypet.quit();
+  });
+
+  // Load version
+  window.keypet.getVersion().then(v => {
+    document.getElementById('app-version').textContent = 'KeyPet v' + v;
   });
 </script>
 </body>

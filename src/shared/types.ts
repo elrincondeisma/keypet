@@ -61,7 +61,9 @@ export const DEFAULT_SETTINGS: Settings = {
 export const EVOLUTION_THRESHOLDS = [
   { level: 1, keys: 0, streak: 0 },
   { level: 2, keys: 50000, streak: 7 },
-  { level: 3, keys: 500000, streak: 30 },
+  { level: 3, keys: 200000, streak: 14 },
+  { level: 4, keys: 500000, streak: 30 },
+  { level: 5, keys: 1000000, streak: 60 },
 ];
 
 export interface PetDimensions {

@@ -154,8 +154,8 @@ export function createStatsWindow(): BrowserWindow {
   }
 
   statsWindow = new BrowserWindow({
-    width: 700,
-    height: 550,
+    width: 720,
+    height: 600,
     minWidth: 500,
     minHeight: 400,
     title: 'KeyPet - Statistics',

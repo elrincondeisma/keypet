@@ -193,6 +193,10 @@ function updateStats(): void {
 }
 
 function setupIPC(): void {
+  ipcMain.handle('get-app-version', () => {
+    return app.getVersion();
+  });
+
   ipcMain.handle('get-stats', () => {
     return getFullStats();
   });

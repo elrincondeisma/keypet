@@ -41,22 +41,22 @@
     .topbar {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 18px 24px 0;
+      gap: 14px;
+      padding: 20px 24px 0;
       flex-shrink: 0;
     }
 
     .topbar-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
       overflow: hidden;
       flex-shrink: 0;
       image-rendering: pixelated;
     }
 
     .topbar-title {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
       letter-spacing: -0.3px;
     }
@@ -711,6 +711,88 @@
       background: rgba(255,69,58,0.16);
       border-color: rgba(255,69,58,0.5);
     }
+
+    /* ─────────────────────────────────────────
+       CREDITS TAB
+    ───────────────────────────────────────── */
+
+    .credits-section {
+      margin-bottom: 24px;
+    }
+
+    .credits-heading {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      padding-left: 2px;
+    }
+
+    .credits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .credits-card {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .credits-card.creator {
+      border: 1px solid rgba(167, 139, 250, 0.25);
+      background: rgba(167, 139, 250, 0.05);
+    }
+
+    .credits-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent2);
+      flex-shrink: 0;
+    }
+
+    .credits-card.creator .credits-avatar {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+    }
+
+    .credits-info {
+      flex: 1;
+    }
+
+    .credits-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .credits-role {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .credits-footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 32px;
+      padding: 16px;
+      border-top: 1px solid var(--surface2);
+    }
   </style>
 </head>
 <body>
@@ -725,6 +807,7 @@
   <div class="tab-bar">
     <button class="tab active" data-tab="stats">Estadísticas</button>
     <button class="tab" data-tab="settings">Ajustes</button>
+    <button class="tab" data-tab="credits">Agradecimientos</button>
   </div>
 
   <!-- ══════════════════════════════
@@ -797,7 +880,7 @@
     <div class="evo-card">
       <div class="evo-header">
         <span class="evo-badge" id="evo-badge">Nv. 1</span>
-        <span class="evo-title" id="evo-title">Huevo</span>
+        <span class="evo-title" id="evo-title">SSJ</span>
         <span class="evo-next" id="evo-next"></span>
       </div>
       <div class="prog-row">
@@ -1030,11 +1113,55 @@
 
   </div><!-- /tab-settings -->
 
+  <!-- ══════════════════════════════
+       TAB: AGRADECIMIENTOS
+  ══════════════════════════════ -->
+  <div id="tab-credits" class="tab-content">
+
+    <div class="credits-section">
+      <div class="credits-heading">Creado por</div>
+      <div class="credits-card creator">
+        <div class="credits-avatar">IC</div>
+        <div class="credits-info">
+          <div class="credits-name">Ismael Catala Gil</div>
+          <div class="credits-role">Desarrollador & Diseñador</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="credits-section">
+      <div class="credits-heading">Beta Testers</div>
+      <div class="credits-list">
+        <div class="credits-card">
+          <div class="credits-avatar">PD</div>
+          <div class="credits-info">
+            <div class="credits-name">Pavel Del Pozo</div>
+            <div class="credits-role">Beta Tester</div>
+          </div>
+        </div>
+        <div class="credits-card">
+          <div class="credits-avatar">SV</div>
+          <div class="credits-info">
+            <div class="credits-name">Sergio Valverde</div>
+            <div class="credits-role">Beta Tester</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="credits-footer">
+      Gracias por ayudar a hacer KeyPet mejor.
+    </div>
+
+  </div><!-- /tab-credits -->
+
 <script>
   const EVOLUTION = [
-    { level: 1, name: 'Huevo',   keys: 50000,  streak: 7  },
-    { level: 2, name: 'Pollito', keys: 500000, streak: 30 },
-    { level: 3, name: 'Máximo',  keys: Infinity, streak: Infinity },
+    { level: 1, name: 'SSJ',      keys: 50000,   streak: 7  },
+    { level: 2, name: 'SSJ2',     keys: 200000,  streak: 14 },
+    { level: 3, name: 'SSJ3',     keys: 500000,  streak: 30 },
+    { level: 4, name: 'SSJ God',  keys: 1000000, streak: 60 },
+    { level: 5, name: 'SSJ Blue', keys: Infinity, streak: Infinity },
   ];
 
   function fmt(n) {
